@@ -208,3 +208,40 @@ src(s0)
 ```
 
 ---
+
+### [user]
+El texto aparece pixelado en el canvas de Hydra — se sigue viendo pixelado tras el intento anterior de pasar `width × dpr` al constructor de Hydra.
+
+### [assistant]
+Causa encontrada: si Hydra ignora los parámetros `width`/`height` del constructor (la versión CDN puede no respetarlos), el output canvas queda en resolución CSS (~1440×900). Nuestro emoji canvas estaba creado a 2880×1800 (físico × dpr). Hydra hace el mapeado texture→output con downsampling 2:1 usando filtro NEAREST, que convierte texto suavemente anti-aliased en el aspecto exacto de una pixel/bitmap font: bordes cuadrados, pixelado.
+
+Tres cambios:
+
+1. **`src/renderer/hydra.js`** — `initHydra()` lee `hCanvas.width`/`hCanvas.height` DESPUÉS de que Hydra inicialice, pasa esas dimensiones a `createEmojiCanvas()`. Garantiza mapeado 1:1 de textura a output.
+
+2. **`src/renderer/canvas.js`** — `createEmojiCanvas(w, h)` acepta dimensiones explícitas con fallback a `dpr × viewport`.
+
+3. **`src/renderer/canvas.js`** — Font del spinner cambiado de `300 Xpx system-ui` a `-apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial` (sin peso 300). El stack es más robusto en contextos canvas.
+
+Añadido log `[init] hydra canvas after init: WxH` en `public/index.html` para verificar la resolución real de Hydra en consola.
+
+---
+
+### [user]
+El resultado es peor — la imagen muestra texto con aspecto de pixel/bitmap font distinto pero igual de pixelado (ahora outline en vez de blocky). El spinner también se ve pixelado.
+
+### [assistant]
+El problema es arquitectural, no de configuración: **cualquier texto renderizado en canvas 2D y procesado por el pipeline WebGL de Hydra perderá calidad**. Los strokes finos de las tipografías son destruidos por el filtrado de textura, independientemente de la fuente o de la resolución del canvas. El spinner (trazo grueso) sobrevive algo mejor; el texto con strokes finos, no.
+
+Solución definitiva: **overlay CSS** para el estado de carga. El browser renderiza el texto como DOM nativo — siempre nítido, anti-aliased por el sistema operativo, sin pasar por WebGL. El canvas de Hydra solo muestra emojis (donde la calidad SVG es aceptable).
+
+Cambios en `public/index.html`:
+- Eliminado `showText(text)` — ya no se llama al canvas durante la carga
+- Añadido `<div id="loading-overlay">` con `<div id="loading-text">` y `<div id="loading-spinner">`
+- CSS: overlay centrado, `font-family: -apple-system`, `font-weight: 300`, `clamp(1rem, 4vw, 3rem)`, spinner CSS puro con `border-top-color` + animación `@keyframes spin`
+- `submit()` activa/desactiva el overlay con `.classList.add/remove('active')`
+- Ya no importa `showText` de hydra.js
+
+Durante la carga, el canvas muestra los emojis anteriores (o negro en la primera traducción). El overlay flota encima con z-index:5. Al llegar la respuesta, el overlay desaparece y el canvas hace el crossfade a los nuevos emojis.
+
+---

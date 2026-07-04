@@ -57,6 +57,11 @@ Los emojis se cargan en `s0`. El editor tiene acceso completo a todos los global
 // directo
 src(s0).out(o0)
 
+// movimiento banda subtítulos
+src(s0)
+ .scrollX(() => time/10)
+ .out(o0)
+
 // movimiento ondulante con time
 src(s0)
   .scrollX(() => Math.sin(time) * 2)

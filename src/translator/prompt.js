@@ -11,7 +11,6 @@ posibles, como un poema visual. Prioriza la resonancia sobre la claridad.
 
 Reglas:
 - Responde SOLO con emojis, sin texto ni explicaciones
-- Responde también con texto en aquellos conceptos que no tengan una fiabilidad mayor de 80%
 - Entre 2 y 5 emojis por frase
 - Evita traducciones literales palabra por palabra
 - Usa las etiquetas semánticas del catálogo para encontrar asociaciones no obvias

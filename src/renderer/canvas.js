@@ -5,11 +5,11 @@ const EMOJI_RATIO = 0.22
 
 let loadingAnimId = null
 
-export function createEmojiCanvas() {
+export function createEmojiCanvas(w, h) {
   const dpr = window.devicePixelRatio || 1
   const canvas = document.createElement('canvas')
-  canvas.width  = Math.round(window.innerWidth  * dpr)
-  canvas.height = Math.round(window.innerHeight * dpr)
+  canvas.width  = w ?? Math.round(window.innerWidth  * dpr)
+  canvas.height = h ?? Math.round(window.innerHeight * dpr)
   return canvas
 }
 
@@ -25,7 +25,7 @@ export function startLoading(canvas, text) {
 
   ctx.textAlign    = 'center'
   ctx.textBaseline = 'middle'
-  ctx.font         = `300 ${fontSize}px system-ui, sans-serif`
+  ctx.font         = `${fontSize}px -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif`
 
   const draw = (ts) => {
     ctx.clearRect(0, 0, canvas.width, canvas.height)

@@ -3,8 +3,16 @@ import { createEmojiCanvas, renderEmojiStrip, transitionTo, startLoading, stopLo
 let emojiCanvas = null
 
 export function initHydra() {
-  emojiCanvas = createEmojiCanvas()
-  console.log(`[hydra] canvas ${emojiCanvas.width}×${emojiCanvas.height} (dpr ${window.devicePixelRatio})`)
+  // Read Hydra's actual canvas dimensions after init — if Hydra ignores the
+  // width/height constructor options the mismatched sizes cause NEAREST-filter
+  // downsampling that makes text look pixelated.
+  const hCanvas = document.getElementById('hydra-canvas')
+  const dpr = window.devicePixelRatio || 1
+  const w = hCanvas.width  || Math.round(window.innerWidth  * dpr)
+  const h = hCanvas.height || Math.round(window.innerHeight * dpr)
+
+  emojiCanvas = createEmojiCanvas(w, h)
+  console.log(`[hydra] output ${w}×${h} | emoji canvas ${emojiCanvas.width}×${emojiCanvas.height} (dpr ${dpr})`)
   window.s0.init({ src: emojiCanvas, dynamic: true })
   console.log('[hydra] s0 initialized')
   return emojiCanvas
