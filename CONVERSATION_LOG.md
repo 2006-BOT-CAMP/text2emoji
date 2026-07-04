@@ -158,3 +158,34 @@ Ver entrada anterior — la solución de fetch+inject+blob fue la definitiva par
 Creado `README.md` con: descripción del proyecto y ejemplos de traducción, requisitos e instalación, tabla de controles de la UI, ejemplos de sketches Hydra, diagrama de arquitectura y árbol de ficheros, decisiones técnicas documentadas (sin API key, cache, SVGs nítidos, canvas full-res), sección de créditos (OpenMoji CC BY-SA 4.0, Hydra, Claude).
 
 ---
+
+### [user]
+La frase de entrada debería mostrarse en el canvas de Hydra durante unos segundos o hasta que llegue la respuesta en emojis, con un indicador tipo rueda de "procesando".
+
+### [assistant]
+Añadida animación de loading en `src/renderer/canvas.js`:
+- `startLoading(canvas, text)` — dibuja el texto centrado + arco giratorio animado con `requestAnimationFrame`
+- `stopLoading()` — cancela el loop de animación
+- `transitionTo` actualizado: carga los SVGs mientras el spinner sigue activo, lo para justo antes del snapshot para el crossfade
+
+Nuevas funciones expuestas en `src/renderer/hydra.js`:
+- `showText(text)` — llama a `startLoading` 
+- `clearCanvas()` — para el spinner y limpia (usado en caso de error)
+
+`public/index.html` actualizado: `showText(text)` se llama inmediatamente al submit, antes del fetch. El flujo es: texto+spinner → (Claude procesa) → crossfade a emojis.
+
+---
+
+### [user]
+¿En el prompt puedo hacer referencia a que utilice openmoji.json como fuente para interpretar mejor la traducción? En concreto los campos group, subgroups, tags.
+
+### [assistant]
+Implementado catálogo semántico de emojis inyectado en el system prompt al arrancar el servidor:
+
+- `src/translator/prompt.js` — separado en `BASE_PROMPT` + `buildSystemPrompt(catalog)`. El catálogo se append tras las instrucciones con la sección "CATÁLOGO DE EMOJIS".
+- `server/api.js` — `buildEmojiCatalog()` al startup: carga `openmoji.json`, filtra a emojis Unicode estándar sin variantes de skintone (excluye `component` y `flags`), agrupa por categoría, escribe el prompt enriquecido en `data/system-prompt.txt`.
+- `callClaude()` actualizado para usar `--system-prompt-file` en lugar de `--system-prompt` (evita límites de tamaño de argumentos shell).
+
+Resultado: 113.5KB de system prompt, 1781 emojis con annotation + tags. Prueba: "noche sin fondo" → 🌌🕳️ (agujero negro para "sin fondo"). Caché limpiado para regenerar con el nuevo prompt.
+
+---
