@@ -150,3 +150,11 @@ Vamos a probar el emoji_ratio, porque se siguen viendo pixelados.
 Ver entrada anterior — la solución de fetch+inject+blob fue la definitiva para el pixelado. `EMOJI_RATIO = 0.22` activo.
 
 ---
+
+### [user]
+¿Puedes añadir un README.md con la descripción del proyecto y cómo utilizarlo?
+
+### [assistant]
+Creado `README.md` con: descripción del proyecto y ejemplos de traducción, requisitos e instalación, tabla de controles de la UI, ejemplos de sketches Hydra, diagrama de arquitectura y árbol de ficheros, decisiones técnicas documentadas (sin API key, cache, SVGs nítidos, canvas full-res), sección de créditos (OpenMoji CC BY-SA 4.0, Hydra, Claude).
+
+---
