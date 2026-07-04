@@ -1,7 +1,8 @@
 import { loadEmojiImages } from '../emojis/loader.js'
 
-// emoji height as fraction of canvas height — sube para emojis más grandes
 const EMOJI_RATIO = 0.22
+
+let loadingAnimId = null
 
 export function createEmojiCanvas() {
   const dpr = window.devicePixelRatio || 1
@@ -9,6 +10,49 @@ export function createEmojiCanvas() {
   canvas.width  = Math.round(window.innerWidth  * dpr)
   canvas.height = Math.round(window.innerHeight * dpr)
   return canvas
+}
+
+// Animates text + spinner on canvas until stopLoading() is called
+export function startLoading(canvas, text) {
+  stopLoading()
+  const ctx      = canvas.getContext('2d')
+  const cx       = canvas.width / 2
+  const cy       = canvas.height / 2
+  const fontSize = Math.round(canvas.height * 0.055)
+  const spinR    = Math.round(canvas.height * 0.032)
+  const spinY    = cy + fontSize * 1.4
+
+  ctx.textAlign    = 'center'
+  ctx.textBaseline = 'middle'
+  ctx.font         = `300 ${fontSize}px system-ui, sans-serif`
+
+  const draw = (ts) => {
+    ctx.clearRect(0, 0, canvas.width, canvas.height)
+
+    // text
+    ctx.fillStyle = 'rgba(255,255,255,0.75)'
+    ctx.fillText(text, cx, cy)
+
+    // spinning arc
+    const angle = (ts / 900) * Math.PI * 2
+    ctx.beginPath()
+    ctx.arc(cx, spinY, spinR, angle, angle + Math.PI * 1.3)
+    ctx.strokeStyle = 'rgba(255,255,255,0.55)'
+    ctx.lineWidth   = Math.max(2, Math.round(spinR * 0.14))
+    ctx.lineCap     = 'round'
+    ctx.stroke()
+
+    loadingAnimId = requestAnimationFrame(draw)
+  }
+
+  loadingAnimId = requestAnimationFrame(draw)
+}
+
+export function stopLoading() {
+  if (loadingAnimId) {
+    cancelAnimationFrame(loadingAnimId)
+    loadingAnimId = null
+  }
 }
 
 export async function renderEmojiStrip(canvas, emojiString) {
@@ -32,22 +76,25 @@ export async function renderEmojiStrip(canvas, emojiString) {
 }
 
 export async function transitionTo(canvas, emojiString, duration = 600) {
-  const from = document.createElement('canvas')
-  from.width  = canvas.width
-  from.height = canvas.height
-  from.getContext('2d').drawImage(canvas, 0, 0)
-
+  // load SVGs while spinner is still running
   const to = document.createElement('canvas')
   to.width  = canvas.width
   to.height = canvas.height
   await renderEmojiStrip(to, emojiString)
+
+  // stop spinner and snapshot last frame
+  stopLoading()
+  const from = document.createElement('canvas')
+  from.width  = canvas.width
+  from.height = canvas.height
+  from.getContext('2d').drawImage(canvas, 0, 0)
 
   const ctx = canvas.getContext('2d')
   let start = null
 
   const step = (ts) => {
     if (!start) start = ts
-    const t = Math.min((ts - start) / duration, 1)
+    const t    = Math.min((ts - start) / duration, 1)
     const ease = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t
 
     ctx.clearRect(0, 0, canvas.width, canvas.height)

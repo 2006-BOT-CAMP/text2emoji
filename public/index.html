@@ -99,7 +99,7 @@
   <script src="https://unpkg.com/hydra-synth"></script>
 
   <script type="module">
-    import { initHydra, showEmojis } from '/src/renderer/hydra.js'
+    import { initHydra, showText, showEmojis, clearCanvas } from '/src/renderer/hydra.js'
 
     new Hydra({ canvas: document.getElementById('hydra-canvas'), detectAudio: false })
     initHydra()
@@ -151,6 +151,9 @@
       if (!text) return
       input.value = ''
       btn.disabled = true
+
+      showText(text)  // muestra texto + spinner inmediatamente
+
       try {
         const res = await fetch('/translate', {
           method: 'POST',
@@ -159,9 +162,10 @@
         })
         const { emojis, error } = await res.json()
         if (error) throw new Error(error)
-        await showEmojis(emojis)
+        await showEmojis(emojis)  // crossfade desde el spinner
       } catch (err) {
         console.error('translation error:', err)
+        clearCanvas()
       } finally {
         btn.disabled = false
         input.focus()
