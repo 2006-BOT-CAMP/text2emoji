@@ -51,6 +51,8 @@ const saveCache = (c) => writeFileSync(CACHE_PATH, JSON.stringify(c, null, 2))
 
 function callClaude(text) {
   return new Promise((resolve, reject) => {
+    const t0 = Date.now()
+    console.log(`[claude] → "${text}"`)
     const proc = spawn(CLAUDE_BIN, [
       '--print',
       '--system-prompt-file', PROMPT_FILE,
@@ -60,7 +62,12 @@ function callClaude(text) {
     let out = '', err = ''
     proc.stdout.on('data', (d) => (out += d))
     proc.stderr.on('data', (d) => (err += d))
-    proc.on('close', (code) => code !== 0 ? reject(new Error(err || `exit ${code}`)) : resolve(out.trim()))
+    proc.on('close', (code) => {
+      if (code !== 0) { console.error(`[claude] ✗ ${err}`); return reject(new Error(err || `exit ${code}`)) }
+      const emojis = out.trim()
+      console.log(`[claude] ← "${text}" → ${emojis}  (${Date.now() - t0}ms)`)
+      resolve(emojis)
+    })
   })
 }
 
@@ -93,6 +100,7 @@ const server = createServer(async (req, res) => {
         const key = text.toLowerCase().trim()
         const cache = loadCache()
         if (cache[key]) {
+          console.log(`[cache] hit: "${text}" → ${cache[key]}`)
           res.writeHead(200, { 'Content-Type': 'application/json' })
           res.end(JSON.stringify({ emojis: cache[key], cached: true }))
           return

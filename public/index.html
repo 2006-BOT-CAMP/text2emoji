@@ -152,7 +152,8 @@
       input.value = ''
       btn.disabled = true
 
-      showText(text)  // muestra texto + spinner inmediatamente
+      console.log(`[translate] → "${text}"`)
+      showText(text)
 
       try {
         const res = await fetch('/translate', {
@@ -160,11 +161,12 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ text }),
         })
-        const { emojis, error } = await res.json()
+        const { emojis, error, cached } = await res.json()
         if (error) throw new Error(error)
-        await showEmojis(emojis)  // crossfade desde el spinner
+        console.log(`[translate] ← ${emojis}${cached ? ' (cached)' : ''}`)
+        await showEmojis(emojis)
       } catch (err) {
-        console.error('translation error:', err)
+        console.error('[translate] ✗', err.message)
         clearCanvas()
       } finally {
         btn.disabled = false

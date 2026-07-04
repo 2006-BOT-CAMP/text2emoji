@@ -4,7 +4,9 @@ let emojiCanvas = null
 
 export function initHydra() {
   emojiCanvas = createEmojiCanvas()
+  console.log(`[hydra] canvas ${emojiCanvas.width}×${emojiCanvas.height} (dpr ${window.devicePixelRatio})`)
   window.s0.init({ src: emojiCanvas, dynamic: true })
+  console.log('[hydra] s0 initialized')
   return emojiCanvas
 }
 

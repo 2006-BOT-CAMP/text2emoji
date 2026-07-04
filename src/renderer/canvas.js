@@ -58,6 +58,7 @@ export function stopLoading() {
 export async function renderEmojiStrip(canvas, emojiString) {
   const ctx  = canvas.getContext('2d')
   const size = Math.round(canvas.height * EMOJI_RATIO)
+  console.log(`[canvas] render strip: "${emojiString}" at ${size}px on ${canvas.width}×${canvas.height}`)
   const images = await loadEmojiImages(emojiString, size)
   const loaded = images.filter((i) => i.loaded)
 
@@ -76,7 +77,7 @@ export async function renderEmojiStrip(canvas, emojiString) {
 }
 
 export async function transitionTo(canvas, emojiString, duration = 600) {
-  // load SVGs while spinner is still running
+  console.log(`[canvas] transition → "${emojiString}"`)
   const to = document.createElement('canvas')
   to.width  = canvas.width
   to.height = canvas.height
