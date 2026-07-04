@@ -189,3 +189,22 @@ Implementado catálogo semántico de emojis inyectado en el system prompt al arr
 Resultado: 113.5KB de system prompt, 1781 emojis con annotation + tags. Prueba: "noche sin fondo" → 🌌🕳️ (agujero negro para "sin fondo"). Caché limpiado para regenerar con el nuevo prompt.
 
 ---
+
+### [user]
+¿Es posible que en la caja de comandos de Hydra no pueda utilizar variables como `time`?
+
+### [assistant]
+El problema es que `<script type="module">` corre en modo estricto y su `eval()` tiene scope aislado — los globales de Hydra (`time`, `mouse`, `osc`, etc.) no son accesibles como identificadores libres desde dentro del módulo.
+
+Solución: añadido un script no-módulo en `index.html` que expone `window._hydraEval = function(code) { return eval(code) }`. El editor llama a `window._hydraEval()` en lugar de `eval()`, con acceso completo al scope global de Hydra.
+
+Nota importante: `time` debe usarse como `() => time` (función) para que se evalúe cada frame. Como valor directo solo captura el instante de ejecución.
+
+Ejemplo añadido al README:
+```javascript
+src(s0)
+  .scrollX(() => Math.sin(time) * 2)
+  .out(o0)
+```
+
+---

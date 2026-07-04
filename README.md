@@ -51,11 +51,16 @@ Abre **http://localhost:3001** en el browser.
 
 ### Editor Hydra
 
-Los emojis se cargan en `s0`. Ejemplos de sketches:
+Los emojis se cargan en `s0`. El editor tiene acceso completo a todos los globales de Hydra — incluyendo `time` y `mouse` — porque el `eval` corre fuera del scope del módulo ES.
 
 ```javascript
 // directo
 src(s0).out(o0)
+
+// movimiento ondulante con time
+src(s0)
+  .scrollX(() => Math.sin(time) * 2)
+  .out(o0)
 
 // banda en la franja inferior
 src(s0).scale(1, 0.25).scrollY(0.38).out(o0)
@@ -65,7 +70,15 @@ src(s0).saturate(2).contrast(1.2).out(o0)
 
 // caleidoscopio
 src(s0).kaleid(6).rotate(0.1, 0.01).out(o0)
+
+// hue animado
+src(s0).hue(() => time * 0.1).out(o0)
+
+// combinado con noise
+noise(() => time * 0.3).layer(src(s0)).out(o0)
 ```
+
+> Usar `time` directamente da un valor estático. Usar `() => time` lo evalúa cada frame.
 
 ---
 

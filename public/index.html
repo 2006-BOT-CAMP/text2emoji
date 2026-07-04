@@ -98,6 +98,11 @@
 
   <script src="https://unpkg.com/hydra-synth"></script>
 
+  <!-- eval en script no-módulo para acceder a los globales de Hydra (time, mouse, osc...) -->
+  <script>
+    window._hydraEval = function(code) { return eval(code) }
+  </script>
+
   <script type="module">
     import { initHydra, showText, showEmojis, clearCanvas } from '/src/renderer/hydra.js'
 
@@ -111,7 +116,7 @@
 
     function runHydra() {
       try {
-        eval(codeEl.value)
+        window._hydraEval(codeEl.value)
         statusEl.textContent = '✓ ok'
         statusEl.className = 'ok'
         setTimeout(() => {
