@@ -1,0 +1,12 @@
+{
+  "name": "text2emoji",
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "server": "node server/api.js",
+    "dev": "npx serve public -l 8080"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.53.0"
+  }
+}
