@@ -1,6 +1,7 @@
 import { loadEmojiImages } from '../emojis/loader.js'
 
-const EMOJI_RATIO = 0.22
+//const EMOJI_RATIO = 0.22
+const EMOJI_RATIO = 0.33
 //const EMOJI_RATIO = 0.5
 
 let loadingAnimId = null
