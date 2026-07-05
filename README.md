@@ -1,21 +1,6 @@
 # text2emoji
 
-<div style="border:1px solid rgba(0,0,0,0.15);border-radius:8px;padding:12px;display:inline-grid;">
-  <div style="grid-row:1;grid-column:1;animation:t2e-a 30s infinite;">
-    <img src="public/openmoji/1F4DC.svg" height="80">
-    <img src="public/openmoji/0032-FE0F-20E3.svg" height="80">
-    <img src="public/openmoji/1F970.svg" height="80">
-  </div>
-  <div style="grid-row:1;grid-column:1;animation:t2e-b 30s infinite;opacity:0;">
-    <img src="public/openmoji/1F970.svg" height="80">
-    <img src="public/openmoji/2728.svg" height="80">
-    <img src="public/openmoji/1F3A8.svg" height="80">
-  </div>
-</div>
-<style>
-@keyframes t2e-a{0%,45%{opacity:1}50%,95%{opacity:0}100%{opacity:1}}
-@keyframes t2e-b{0%,45%{opacity:0}50%,95%{opacity:1}100%{opacity:0}}
-</style>
+![text2emoji](logo.svg)
 
 Traducción de texto a pictogramas poéticos para Hydra.
 

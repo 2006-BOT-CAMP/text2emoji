@@ -245,3 +245,39 @@ Cambios en `public/index.html`:
 Durante la carga, el canvas muestra los emojis anteriores (o negro en la primera traducción). El overlay flota encima con z-index:5. Al llegar la respuesta, el overlay desaparece y el canvas hace el crossfade a los nuevos emojis.
 
 ---
+
+### [user]
+Añadir los SVGs del directorio raíz al README como logo debajo del título, en orden 📜 2️⃣ 🥰.
+
+### [assistant]
+Añadidas tres etiquetas `<img>` en el README referenciando los SVGs de la raíz (`1F4DC.svg`, `0032-FE0F-20E3.svg`, `1F970.svg`) a 80px de alto.
+
+---
+
+### [user]
+Mejor cargarlos desde la copia local en `public/openmoji/` (se borrarán las copias de la raíz).
+
+### [assistant]
+Actualizadas las rutas de las imágenes en el README a `public/openmoji/1F4DC.svg`, `public/openmoji/0032-FE0F-20E3.svg`, `public/openmoji/1F970.svg`.
+
+---
+
+### [user]
+Poner los tres emojis en una caja que alterne cada 15 segundos entre 📜 2️⃣ 🥰 y 🥰 ✨ 🎨.
+
+### [assistant]
+Implementado con HTML inline en el README: dos `<div>` apilados en el mismo grid cell con `grid-row:1; grid-column:1`, animación CSS `@keyframes` de 30s que alterna opacidad. Ciclo: 15s frame 1 visible → crossfade → 15s frame 2 visible → crossfade → repite.
+
+---
+
+### [user]
+No se carga bien en GitHub — el `<style>` aparece como texto plano y los dos frames se muestran a la vez.
+
+### [assistant]
+GitHub sanitiza el HTML del README eliminando las etiquetas `<style>` — las animaciones CSS en markdown no son posibles. Solución: **SVG autocontenido** (`logo.svg` en la raíz). Los SVGs soportan `@keyframes` en su propio bloque `<style>` y GitHub los renderiza animados cuando se referencian como imagen.
+
+Script Node.js que lee los 5 openmojis (`1F4DC`, `0032-FE0F-20E3`, `1F970`, `2728`, `1F3A8`), extrae su contenido interior y los embebe inline en un SVG padre de 300×100 con dos grupos `<g class="f1/f2">` animados. El borde de la caja es un `<rect>` SVG. Resultado: `logo.svg` de ~19KB, completamente autocontenido.
+
+README actualizado a `![text2emoji](logo.svg)` — una línea.
+
+---
