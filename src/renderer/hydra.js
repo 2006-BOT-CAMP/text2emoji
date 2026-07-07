@@ -1,4 +1,4 @@
-import { createEmojiCanvas, renderEmojiStrip, transitionTo, startLoading, stopLoading, setBgColor } from './canvas.js'
+import { createEmojiCanvas, renderEmojiStrip, transitionTo, startLoading, stopLoading, setBgColor, fillBackground } from './canvas.js'
 
 export { setBgColor }
 
@@ -15,6 +15,7 @@ export function initHydra() {
   const h = hCanvas.height || Math.round(window.innerHeight * dpr)
 
   emojiCanvas = createEmojiCanvas(w, h)
+  fillBackground(emojiCanvas)
   console.log(`[hydra] output ${w}×${h} | emoji canvas ${emojiCanvas.width}×${emojiCanvas.height} (dpr ${dpr})`)
   window.s0.init({ src: emojiCanvas, dynamic: true })
   console.log('[hydra] s0 initialized')
@@ -45,7 +46,10 @@ export async function showEmojis(emojiString, animate = true) {
 }
 
 export async function refreshCanvas() {
-  if (emojiCanvas && lastEmojiString) {
+  if (!emojiCanvas) return
+  if (lastEmojiString) {
     await renderEmojiStrip(emojiCanvas, lastEmojiString)
+  } else {
+    fillBackground(emojiCanvas)
   }
 }

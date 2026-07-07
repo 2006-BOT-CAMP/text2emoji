@@ -5,9 +5,15 @@ const EMOJI_RATIO = 0.33
 //const EMOJI_RATIO = 0.5
 
 let loadingAnimId = null
-let bgColor = '#e0e0e0'
+let bgColor = '#808080'
 
 export function setBgColor(color) { bgColor = color }
+
+export function fillBackground(canvas) {
+  const ctx = canvas.getContext('2d')
+  ctx.fillStyle = bgColor
+  ctx.fillRect(0, 0, canvas.width, canvas.height)
+}
 
 export function createEmojiCanvas(w, h) {
   const dpr = window.devicePixelRatio || 1

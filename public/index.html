@@ -161,13 +161,15 @@
     <!--
     <textarea id="hydra-code" spellcheck="false">src(s0).out(o0)</textarea>
     -->
-    <textarea id="hydra-code" spellcheck="false">src(s0).scrollX(() => time/10).out(o0)</textarea>
+    <textarea id="hydra-code" spellcheck="false">src(s0)
+.scrollX(() => time/10)
+.out(o0)</textarea>
     <div id="hydra-status">ctrl+enter para ejecutar · tab para ocultar</div>
   </div>
 
   <div id="bg-control">
     <label for="bg-slider">bg</label>
-    <input id="bg-slider" type="range" min="0" max="255" value="224">
+    <input id="bg-slider" type="range" min="0" max="255" value="128">
   </div>
 
   <div id="input-bar">
