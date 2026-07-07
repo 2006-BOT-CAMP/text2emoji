@@ -9,7 +9,7 @@ const PUBLIC     = resolve('./public')
 const SRC        = resolve('./src')
 const CACHE_PATH = './data/translations.json'
 const PROMPT_FILE = './data/system-prompt.txt'
-const CLAUDE_BIN = '/Users/galdu/.vscode/extensions/anthropic.claude-code-2.1.196-darwin-arm64/resources/native-binary/claude'
+const CLAUDE_BIN = 'claude'
 
 const MIME = {
   '.html': 'text/html',
