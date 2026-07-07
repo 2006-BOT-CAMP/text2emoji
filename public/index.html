@@ -80,6 +80,38 @@
     #hydra-status.ok  { color: #7fff7f; }
     #hydra-status.err { color: #ff6b6b; }
 
+    /* — control fondo — */
+    #bg-control {
+      position: fixed;
+      bottom: 2rem;
+      right: 2rem;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    #bg-control label {
+      font-size: 0.72rem;
+      color: rgba(255,255,255,0.35);
+    }
+    #bg-slider {
+      -webkit-appearance: none;
+      width: 80px;
+      height: 3px;
+      border-radius: 2px;
+      background: linear-gradient(to right, #fff, #000);
+      outline: none;
+      cursor: pointer;
+    }
+    #bg-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #fff;
+      border: 1px solid rgba(0,0,0,0.3);
+    }
+
     /* — input traducción — */
     #input-bar {
       position: fixed;
@@ -130,6 +162,11 @@
     <div id="hydra-status">ctrl+enter para ejecutar · tab para ocultar</div>
   </div>
 
+  <div id="bg-control">
+    <label for="bg-slider">bg</label>
+    <input id="bg-slider" type="range" min="0" max="255" value="224">
+  </div>
+
   <div id="input-bar">
     <input id="text-input" type="text" placeholder="escribe algo..." autocomplete="off" />
     <button id="send-btn">→</button>
@@ -143,7 +180,7 @@
   </script>
 
   <script type="module">
-    import { initHydra, showEmojis, clearCanvas } from '/src/renderer/hydra.js'
+    import { initHydra, showEmojis, clearCanvas, setBgColor, refreshCanvas } from '/src/renderer/hydra.js'
 
     const dpr     = window.devicePixelRatio || 1
     const physW   = Math.round(window.innerWidth  * dpr)
@@ -233,6 +270,14 @@
 
     btn.addEventListener('click', submit)
     input.addEventListener('keydown', (e) => { if (e.key === 'Enter') submit() })
+
+    // — control fondo —
+    const bgSlider = document.getElementById('bg-slider')
+    bgSlider.addEventListener('input', () => {
+      const v = bgSlider.value
+      setBgColor(`rgb(${v},${v},${v})`)
+      refreshCanvas()
+    })
   </script>
 
 </body>

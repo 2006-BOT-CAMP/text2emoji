@@ -281,3 +281,37 @@ Script Node.js que lee los 5 openmojis (`1F4DC`, `0032-FE0F-20E3`, `1F970`, `272
 README actualizado a `![text2emoji](logo.svg)` — una línea.
 
 ---
+
+### [user]
+Sustituir 2️⃣ por ➡ en el logo y cambiar la animación de crossfade a scroll horizontal.
+
+### [assistant]
+Regenerado `logo.svg`: emoji `0032-FE0F-20E3` reemplazado por `27A1` (➡). Los 6 emojis ahora están en fila a 600px de ancho dentro de un SVG de 300px con `overflow="hidden"`. La animación CSS `translateX(0 → -300px)` desliza entre los dos grupos con `ease-in-out`. Pausa ~13s por grupo, transición ~2.4s.
+
+---
+
+### [user]
+El emoji 🌀 (1F300) no se ve — es negro sobre fondo negro.
+
+### [assistant]
+Causa: el SVG de OpenMoji para 🌀 usa colores oscuros invisibles sobre canvas negro.
+
+Primer intento: `ctx.shadowColor` blanco en `renderEmojiStrip` de `canvas.js`. El usuario lo ajustó manualmente y luego descartó el approach.
+
+Solución definitiva: reemplazar `ctx.clearRect` por `ctx.fillRect` con color de fondo configurable. Variable `bgColor` en `canvas.js`, exportada como `setBgColor(color)` → re-exportada en `hydra.js`. Valor inicial `#e0e0e0`.
+
+---
+
+### [user]
+Añadir un control en pantalla para cambiar el fondo del canvas de blanco a negro, con re-render inmediato.
+
+### [assistant]
+Tres cambios:
+
+1. **`src/renderer/canvas.js`** — variable `bgColor` + `export function setBgColor(color)`.
+
+2. **`src/renderer/hydra.js`** — guarda `lastEmojiString` en cada `showEmojis()`. Nuevo export `refreshCanvas()` que vuelve a llamar a `renderEmojiStrip` con el último string. Re-exporta `setBgColor` y `refreshCanvas`.
+
+3. **`public/index.html`** — slider `#bg-slider` (range 0–255) abajo a la derecha. CSS con gradiente blanco→negro en la pista. Al mover: `setBgColor(rgb(v,v,v))` + `refreshCanvas()` para actualizar el canvas inmediatamente sin esperar nueva traducción.
+
+---

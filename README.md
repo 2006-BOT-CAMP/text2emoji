@@ -49,6 +49,7 @@ Abre **http://localhost:3001** en el browser.
 |----------|-------------|
 | Input inferior | Escribe una frase y pulsa **Enter** o **→** para traducir |
 | Editor Hydra (arriba izquierda) | Escribe el sketch y pulsa **Ctrl+Enter** para ejecutar |
+| Slider `bg` (abajo derecha) | Cambia el fondo del canvas de blanco a negro en tiempo real |
 | **Tab** | Oculta/muestra el editor (modo performance) |
 
 ### Editor Hydra
@@ -132,6 +133,8 @@ texto → POST /translate → Claude Code CLI (--print)
 **SVGs nítidos** — los SVGs de OpenMoji tienen `viewBox="0 0 72 72"` sin dimensiones explícitas. El loader inyecta `width`/`height` en el XML antes de rasterizar para evitar upscaling desde 72px.
 
 **Canvas full-res** — el canvas de emojis se crea a `innerWidth × innerHeight × devicePixelRatio` para que Hydra lo mapee 1:1 sin escalar.
+
+**Fondo configurable** — el color de fondo del canvas es una variable exportada (`setBgColor`). El slider `bg` actualiza el color y llama a `refreshCanvas()` para re-renderizar sin esperar nueva traducción. Permite pasar de fondo blanco (emojis oscuros visibles) a negro (emojis luminosos sobre negro) en tiempo real.
 
 ---
 

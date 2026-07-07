@@ -1,6 +1,9 @@
-import { createEmojiCanvas, renderEmojiStrip, transitionTo, startLoading, stopLoading } from './canvas.js'
+import { createEmojiCanvas, renderEmojiStrip, transitionTo, startLoading, stopLoading, setBgColor } from './canvas.js'
+
+export { setBgColor }
 
 let emojiCanvas = null
+let lastEmojiString = null
 
 export function initHydra() {
   // Read Hydra's actual canvas dimensions after init — if Hydra ignores the
@@ -32,10 +35,17 @@ export function clearCanvas() {
 
 export async function showEmojis(emojiString, animate = true) {
   if (!emojiCanvas) throw new Error('Call initHydra() first')
+  lastEmojiString = emojiString
   if (animate) {
     await transitionTo(emojiCanvas, emojiString)
   } else {
     stopLoading()
     await renderEmojiStrip(emojiCanvas, emojiString)
+  }
+}
+
+export async function refreshCanvas() {
+  if (emojiCanvas && lastEmojiString) {
+    await renderEmojiStrip(emojiCanvas, lastEmojiString)
   }
 }

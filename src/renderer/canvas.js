@@ -5,6 +5,9 @@ const EMOJI_RATIO = 0.33
 //const EMOJI_RATIO = 0.5
 
 let loadingAnimId = null
+let bgColor = '#e0e0e0'
+
+export function setBgColor(color) { bgColor = color }
 
 export function createEmojiCanvas(w, h) {
   const dpr = window.devicePixelRatio || 1
@@ -66,7 +69,9 @@ export async function renderEmojiStrip(canvas, emojiString) {
 
   const padding = Math.round(size * 0.2)
 
-  ctx.clearRect(0, 0, canvas.width, canvas.height)
+//  ctx.fillStyle = '#f5f5f5'
+  ctx.fillStyle = bgColor
+  ctx.fillRect(0, 0, canvas.width, canvas.height)
 
   const totalWidth = loaded.length * (size + padding) - padding
   let x = (canvas.width - totalWidth) / 2
